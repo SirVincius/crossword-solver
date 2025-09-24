@@ -1,4 +1,6 @@
-﻿using System.Runtime.ConstrainedExecution;
+﻿// https://www.pzzl.com/wp-content/uploads/2020/03/wordsearch_helene_hovanec_letter.pdf <-- Some free word search sheets
+
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 public class Extractor
 {
@@ -124,7 +126,7 @@ public class Game
     }
     public bool IsRightToLeft(string word, int row, int col)
     {
-        if (col - word.Length < 0)
+        if (col - word.Length + 1 < 0)
             return false;
         if (word[0] != Grid.Cells[row, col].Letter)
             return false;
@@ -225,7 +227,7 @@ public class Game
         return true;
     }
 
-        public bool IsTopToRight(string word, int row, int col)
+    public bool IsTopToRight(string word, int row, int col)
     {
         if (row - word.Length + 1 < 0 || col - word.Length + 1 < 0)
             return false;
@@ -244,6 +246,16 @@ public class Game
         return true;
     }
 
+    public void CrossWord(Grid grid, string word, int row, int col, int rowShift, int colShift)
+    {
+        for (int i = 0; i < word.Length; i++)
+        {
+            Grid.Cells[row, col].Used = true;
+            row += rowShift;
+            col += colShift;
+        }
+    }
+
 
 
     public Game(string[] data)
@@ -258,7 +270,7 @@ class Program
     public static void Main(string[] args)
     {
         Extractor extractor = new Extractor();
-        string[] data = extractor.getFileContent("filename.txt");
+        string[] data = extractor.getFileContent("filename2.txt");
 
         Game game = new Game(data);
         game.printGame();
@@ -268,17 +280,34 @@ class Program
             {
                 for (int k = 0; k < game.Grid.GridWidth; k++)
                 {
-                    game.IsLeftToRight(game.ListOfWords[i], j, k);
-                    game.IsRightToLeft(game.ListOfWords[i], j, k);
-                    game.IsTopToDown(game.ListOfWords[i], j, k);
-                    game.IsDownToTop(game.ListOfWords[i], j, k);
-                    game.IsDownToLeft(game.ListOfWords[i], j, k);
-                    game.IsTopToLeft(game.ListOfWords[i], j, k);
-                    game.IsDownToRight(game.ListOfWords[i], j, k);
-                    game.IsTopToRight(game.ListOfWords[i], j, k);
-
+                    if (game.IsLeftToRight(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 0, 1);
+                    if (game.IsRightToLeft(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 0, -1);
+                    if (game.IsTopToDown(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 1, 0);
+                    if (game.IsDownToTop(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, -1, 0);
+                    if (game.IsDownToLeft(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 1, 1);
+                    if (game.IsTopToLeft(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, -1, 1);
+                    if (game.IsDownToRight(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 1, -1);
+                    if (game.IsTopToRight(game.ListOfWords[i], j, k))
+                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, -1, -1);
                 }
             }
         }
+        Console.Write("\n\nSolution : ");
+        for (int i = 0; i < game.Grid.GridHeight; i++)
+        {
+            for (int j = 0; j < game.Grid.GridWidth; j++)
+            {
+                if (!game.Grid.Cells[i, j].Used)
+                    Console.Write(game.Grid.Cells[i, j].Letter);
+            }
+        }
+        Console.WriteLine("\n");
     }
 }
