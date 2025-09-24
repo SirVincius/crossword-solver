@@ -1,6 +1,5 @@
 ﻿using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
-
 public class Extractor
 {
     public string[] getFileContent(string filename)
@@ -120,7 +119,7 @@ public class Game
             if (word[i] != letter)
                 return false;
         }
-        Console.WriteLine("Left-Right : " + word);
+        Console.WriteLine("Left-Right : " + word + " -- " + row + ", " + col);
         return true;
     }
     public bool IsRightToLeft(string word, int row, int col)
@@ -136,7 +135,7 @@ public class Game
         }
         if (!stringToCompare.Equals(word))
             return false;
-        Console.WriteLine("Right-Left : " + word);
+        Console.WriteLine("Right-Left : " + word + " -- " + row + ", " + col);
         return true;
     }
     public bool IsTopToDown(string word, int row, int col)
@@ -149,13 +148,13 @@ public class Game
             if (word[i] != letter)
                 return false;
         }
-        Console.WriteLine("Top-Down : " + word);
+        Console.WriteLine("Top-Down : " + word + " -- " + row + ", " + col);
         return true;
     }
 
         public bool IsDownToTop(string word, int row, int col)
     {
-        if (row - word.Length < 0)
+        if (row - word.Length + 1 < 0)
             return false;
         if (word[0] != Grid.Cells[row, col].Letter)
             return false;
@@ -166,7 +165,7 @@ public class Game
         }
         if (!stringToCompare.Equals(word))
             return false;
-        Console.WriteLine("Down-Top : " + word);
+        Console.WriteLine("Down-Top : " + word + " -- " + row + ", " + col);
         return true;
     }
 
@@ -186,6 +185,62 @@ public class Game
         if (!stringToCompare.Equals(word))
             return false;
         Console.WriteLine("Down-Left: " + word + " -- " + row + ", " + col);
+        return true;
+    }
+        public bool IsTopToLeft(string word, int row, int col)
+    {
+        if (row - word.Length + 1 < 0 || col + word.Length > Grid.GridWidth)
+            return false;
+        if (word[0] != Grid.Cells[row, col].Letter)
+            return false;
+        string stringToCompare = new string("");
+        for (int i = 0; i < word.Length; i++)
+        {
+            stringToCompare += Grid.Cells[row, col].Letter;
+            row--;
+            col++;
+        }
+        if (!stringToCompare.Equals(word))
+            return false;
+        Console.WriteLine("Top-Left: " + word + " -- " + row + ", " + col);
+        return true;
+    }
+
+    public bool IsDownToRight(string word, int row, int col)
+    {
+        if (row + word.Length > Grid.GridHeight || col - word.Length + 1 < 0)
+            return false;
+        if (word[0] != Grid.Cells[row, col].Letter)
+            return false;
+        string stringToCompare = new string("");
+        for (int i = 0; i < word.Length; i++)
+        {
+            stringToCompare += Grid.Cells[row, col].Letter;
+            row++;
+            col--;
+        }
+        if (!stringToCompare.Equals(word))
+            return false;
+        Console.WriteLine("Down-Right: " + word + " -- " + row + ", " + col);
+        return true;
+    }
+
+        public bool IsTopToRight(string word, int row, int col)
+    {
+        if (row - word.Length + 1 < 0 || col - word.Length + 1 < 0)
+            return false;
+        if (word[0] != Grid.Cells[row, col].Letter)
+            return false;
+        string stringToCompare = new string("");
+        for (int i = 0; i < word.Length; i++)
+        {
+            stringToCompare += Grid.Cells[row, col].Letter;
+            row--;
+            col--;
+        }
+        if (!stringToCompare.Equals(word))
+            return false;
+        Console.WriteLine("Top-Right: " + word + " -- " + row + ", " + col);
         return true;
     }
 
@@ -218,6 +273,10 @@ class Program
                     game.IsTopToDown(game.ListOfWords[i], j, k);
                     game.IsDownToTop(game.ListOfWords[i], j, k);
                     game.IsDownToLeft(game.ListOfWords[i], j, k);
+                    game.IsTopToLeft(game.ListOfWords[i], j, k);
+                    game.IsDownToRight(game.ListOfWords[i], j, k);
+                    game.IsTopToRight(game.ListOfWords[i], j, k);
+
                 }
             }
         }
