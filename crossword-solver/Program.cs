@@ -6,7 +6,7 @@ public class Extractor
 {
     public string[] getFileContent(string filename)
     {
-        string[] data = File.ReadAllLines(filename);
+        string[] data = File.ReadAllLines("grids/" + filename);
         string[] parsedData = new string[data.Length];
         for (int i = 0; i < data.Length; i++)
         {
@@ -85,7 +85,6 @@ public class Game
 {
     public Grid Grid { get; set; }
     public List<string> ListOfWords { get; set; }
-    public string? Solution { get; set; }
 
     public List<string> setListOfWords(string[] data)
     {
@@ -317,7 +316,7 @@ class Program
     public static void Main(string[] args)
     {
         Extractor extractor = new Extractor();
-        string[] data = extractor.getFileContent("filename2.txt");
+        string[] data = extractor.getFileContent(args[0]);
 
         Game game = new Game(data);
         game.SolveGame();
