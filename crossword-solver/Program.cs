@@ -85,7 +85,7 @@ public class Game
 {
     public Grid Grid { get; set; }
     public List<string> ListOfWords { get; set; }
-    public string Solution { get; set; }
+    public string? Solution { get; set; }
 
     public List<string> setListOfWords(string[] data)
     {
@@ -256,7 +256,54 @@ public class Game
         }
     }
 
+    public void FindWords()
+    {
+        foreach (string word in ListOfWords)
+        {
+            for (int j = 0; j < Grid.GridHeight; j++)
+            {
+                for (int k = 0; k < Grid.GridWidth; k++)
+                {
+                    if (IsLeftToRight(word, j, k))
+                        CrossWord(Grid, word, j, k, 0, 1);
+                    if (IsRightToLeft(word, j, k))
+                        CrossWord(Grid, word, j, k, 0, -1);
+                    if (IsTopToDown(word, j, k))
+                        CrossWord(Grid, word, j, k, 1, 0);
+                    if (IsDownToTop(word, j, k))
+                        CrossWord(Grid, word, j, k, -1, 0);
+                    if (IsDownToLeft(word, j, k))
+                        CrossWord(Grid, word, j, k, 1, 1);
+                    if (IsTopToLeft(word, j, k))
+                        CrossWord(Grid, word, j, k, -1, 1);
+                    if (IsDownToRight(word, j, k))
+                        CrossWord(Grid, word, j, k, 1, -1);
+                    if (IsTopToRight(word, j, k))
+                        CrossWord(Grid, word, j, k, -1, -1);
+                }
+            }
+        }
+    }
 
+    public string ExtractSolution()
+    {
+        string solution = "";
+        for (int i = 0; i < Grid.GridHeight; i++)
+        {
+            for (int j = 0; j < Grid.GridWidth; j++)
+            {
+                if (!Grid.Cells[i, j].Used)
+                    solution += Grid.Cells[i, j].Letter;
+            }
+        }
+        return solution;
+    }
+
+    public void SolveGame()
+    {
+        FindWords();
+        Console.WriteLine("\nSolution : " + ExtractSolution());
+    }
 
     public Game(string[] data)
     {
@@ -273,41 +320,6 @@ class Program
         string[] data = extractor.getFileContent("filename2.txt");
 
         Game game = new Game(data);
-        game.printGame();
-        for (int i = 0; i < game.ListOfWords.Count; i++)
-        {
-            for (int j = 0; j < game.Grid.GridHeight; j++)
-            {
-                for (int k = 0; k < game.Grid.GridWidth; k++)
-                {
-                    if (game.IsLeftToRight(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 0, 1);
-                    if (game.IsRightToLeft(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 0, -1);
-                    if (game.IsTopToDown(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 1, 0);
-                    if (game.IsDownToTop(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, -1, 0);
-                    if (game.IsDownToLeft(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 1, 1);
-                    if (game.IsTopToLeft(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, -1, 1);
-                    if (game.IsDownToRight(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, 1, -1);
-                    if (game.IsTopToRight(game.ListOfWords[i], j, k))
-                        game.CrossWord(game.Grid, game.ListOfWords[i], j, k, -1, -1);
-                }
-            }
-        }
-        Console.Write("\n\nSolution : ");
-        for (int i = 0; i < game.Grid.GridHeight; i++)
-        {
-            for (int j = 0; j < game.Grid.GridWidth; j++)
-            {
-                if (!game.Grid.Cells[i, j].Used)
-                    Console.Write(game.Grid.Cells[i, j].Letter);
-            }
-        }
-        Console.WriteLine("\n");
+        game.SolveGame();
     }
 }
