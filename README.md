@@ -10,7 +10,7 @@ This program takes a well-formatted `.txt` file containing a crossword grid and 
 
 ```
 sudo apt update
-sudo apt install -y dotnet-sdk-8.0 # Replace 8.0 with your desired version
+sudo apt install -y dotnet-sdk-8.0
 ```
 
 **Windows**
